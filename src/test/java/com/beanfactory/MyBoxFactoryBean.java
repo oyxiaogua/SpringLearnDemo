@@ -21,6 +21,9 @@ public class MyBoxFactoryBean implements BeanFactoryPostProcessor {
 		BeanDefinitionBuilder beanDefinitionBuilder2 = BeanDefinitionBuilder.genericBeanDefinition(Box.class);
 		beanDefinitionBuilder2.addPropertyValue("name", "testBox");
 		beanDefinitionBuilder2.addPropertyValue("car", new Car());
+		
+		//context.getAutowireCapableBeanFactory().applyBeanPostProcessorsAfterInitialization(beanDefinition, "hello");
+
 		beanFactory.registerBeanDefinition("box3", beanDefinitionBuilder2.getRawBeanDefinition());
 
 	}

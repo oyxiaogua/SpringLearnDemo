@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context  
+	   http://www.springframework.org/schema/context/spring-context.xsd">
+	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+
+	<bean id="person1" destroy-method="myDestroy" init-method="myInit"
+		class="com.bean.MyPerson">
+		<property name="name">
+			<value>testPerson</value>
+		</property>
+	</bean>
+	<bean id="myPersonPostProcessor" class="com.beanfactory.MyPersonBeanPostProcessor" />
+	<bean id="myPersonBeanFactoryPostProcessor" class="com.beanfactory.MyPersonBeanFactoryPostProcessor" />
+</beans>
