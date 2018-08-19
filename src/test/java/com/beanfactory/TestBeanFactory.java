@@ -19,16 +19,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import com.bean.Box;
 import com.bean.Car;
+import com.bean.MyConditionConfigurationBean;
 import com.bean.MyConfigValue2;
 import com.bean.MyConfigurationDateBean;
 import com.bean.MyConfigurationTestBean;
+import com.bean.MyHelloServiceConfigurationBean;
 import com.bean.MyPerson;
 import com.context.TestAnnotationApplicationContext;
+import com.service.InterfaceHelloService;
+import com.service.InterfaceSayHelloService;
+import com.service.impl.all.TestSayService;
 
 import cn.hutool.json.JSONUtil;
 
@@ -36,33 +42,94 @@ public class TestBeanFactory {
 	private static final Logger log = LoggerFactory.getLogger(TestAnnotationApplicationContext.class);
 
 	@Test
+	public void testXmlQualifier() {
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:/myTestQualifier.xml");
+		context.start();
+		TestSayService testSayService = context.getBean(TestSayService.class);
+		testSayService.callSayHello();
+		context.close();
+	}
+	
+	@Test
+	public void testAnnoConditionConfig() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MyConditionConfigurationBean.class);
+		InterfaceHelloService service= context.getBean(InterfaceHelloService.class);
+		service.sayHello();
+		context.close();
+	}
+	@Test
+	public void testAnnoConfigProfile() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "product");
+		context.register(MyHelloServiceConfigurationBean.class);
+		context.refresh();
+		String[] beanDefinitionNameArr = context.getBeanDefinitionNames();
+		for (String beanDefineName : beanDefinitionNameArr) {
+			log.info("bean={}", beanDefineName);
+		}
+		InterfaceHelloService helloService=null;
+		if(context.containsBean("productHelloServiceImpl")){
+			helloService=(InterfaceHelloService) context.getBean("productHelloServiceImpl");
+			helloService.sayHello();
+		}
+		if(context.containsBean("devHelloServiceImpl")){
+			helloService=(InterfaceHelloService) context.getBean("devHelloServiceImpl");
+			helloService.sayHello();
+		}
+		context.close();
+	}
+
+	@Test
+	public void testXmlConfigProfile() {
+		System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "product");
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:/myTestProfile.xml");
+		context.start();
+		String[] beanDefinitionNameArr = context.getBeanDefinitionNames();
+		for (String beanDefineName : beanDefinitionNameArr) {
+			log.info("bean={}", beanDefineName);
+		}
+		InterfaceHelloService helloService=null;
+		if(context.containsBean("productHelloServiceImpl")){
+			helloService=(InterfaceHelloService) context.getBean("productHelloServiceImpl");
+			helloService.sayHello();
+		}
+		if(context.containsBean("devHelloServiceImpl")){
+			helloService=(InterfaceHelloService) context.getBean("devHelloServiceImpl");
+			helloService.sayHello();
+		}
+		((ClassPathXmlApplicationContext) context).close();
+	}
+
+	@Test
 	public void testXmlConfigurationImport() {
 		ApplicationContext context = new ClassPathXmlApplicationContext("/myTestBeanApplicationContext.xml");
 		String[] beanDefinitionNameArr = context.getBeanDefinitionNames();
-        for (String beanDefineName : beanDefinitionNameArr) {
-        	log.info("bean={}",beanDefineName);
-        }
-        Map<String, String> propMap=(Map<String, String>) context.getBean("myPropMap");
-        log.info("prop={}",JSONUtil.toJsonPrettyStr(propMap));
-        MyConfigValue2 config2 = (MyConfigValue2) context.getBean("myConfigValue2");
+		for (String beanDefineName : beanDefinitionNameArr) {
+			log.info("bean={}", beanDefineName);
+		}
+		Map<String, String> propMap = (Map<String, String>) context.getBean("myPropMap");
+		log.info("prop={}", JSONUtil.toJsonPrettyStr(propMap));
+		MyConfigValue2 config2 = (MyConfigValue2) context.getBean("myConfigValue2");
 		log.info("config2={}", config2);
 		((ClassPathXmlApplicationContext) context).close();
 	}
+
 	@Test
-	public void testConfigurationImport() {
-		//ApplicationContext context = new AnnotationConfigApplicationContext(MyConfigurationTestBean.class);
+	public void testAnnoConfigurationImport() {
+		// ApplicationContext context = new
+		// AnnotationConfigApplicationContext(MyConfigurationTestBean.class);
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(MyConfigurationTestBean.class);
 		context.refresh();
 		String[] beanDefinitionNameArr = context.getBeanDefinitionNames();
-        for (String beanDefineName : beanDefinitionNameArr) {
-        	log.info("bean={}",beanDefineName);
-        }
-        Map<String, String> propMap=(Map<String, String>) context.getBean("myPropMap");
-        log.info("prop={}",JSONUtil.toJsonPrettyStr(propMap));
-        MyConfigValue2 config2 = (MyConfigValue2) context.getBean("myConfigValue2");
+		for (String beanDefineName : beanDefinitionNameArr) {
+			log.info("bean={}", beanDefineName);
+		}
+		Map<String, String> propMap = (Map<String, String>) context.getBean("myPropMap");
+		log.info("prop={}", JSONUtil.toJsonPrettyStr(propMap));
+		MyConfigValue2 config2 = (MyConfigValue2) context.getBean("myConfigValue2");
 		log.info("config2={}", config2);
-        ((AnnotationConfigApplicationContext) context).close();
+		context.close();
 	}
 
 	@Test
