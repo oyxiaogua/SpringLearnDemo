@@ -9,4 +9,13 @@
 	<context:annotation-config />
 	<bean id="car1" class="com.bean.Car" init-method="myInit"
 		destroy-method="myDestory" p:brand="test" p:maxSpeed="200" />
+	
+	<bean id="car2" class="com.bean.Car" >
+	  <property name="name">
+	     <value><![CDATA[测试&值]]></value>
+	  </property>
+	  <property name="color">
+	     <null/>
+	  </property>
+	</bean>	
 </beans>

@@ -179,6 +179,8 @@ public class TestBeanFactory {
 		reader.loadBeanDefinitions(res);
 		Car car1 = (Car) bf.getBean("car1");
 		log.info("car={}", car1);
+		Car car2 = (Car) bf.getBean("car2");
+		log.info("car={}", car2);
 		((DefaultListableBeanFactory) bf).destroySingletons();
 	}
 
