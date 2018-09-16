@@ -14,6 +14,16 @@
 			<value>testPerson</value>
 		</property>
 	</bean>
+	
+	<bean id="person2" destroy-method="myDestroy" init-method="myInit"
+		class="com.bean.MyPrototypePerson" scope="prototype">
+		<property name="name">
+			<value>testPrototypePerson</value>
+		</property>
+	</bean>
+	
 	<bean id="myPersonPostProcessor" class="com.beanfactory.MyPersonBeanPostProcessor" />
+	<bean id="mySingleDestructionAwareBeanPostProcessor" class="com.beanfactory.MySingleDestructionAwareBeanPostProcessor" />
+    <bean id="myPrototypeDestroyPrototypeBeansPostProcessor" class="com.beanfactory.MyPrototypeDestroyPrototypeBeansPostProcessor" />
 	<bean id="myPersonBeanFactoryPostProcessor" class="com.beanfactory.MyPersonBeanFactoryPostProcessor" />
 </beans>

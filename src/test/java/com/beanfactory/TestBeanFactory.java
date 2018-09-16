@@ -31,9 +31,9 @@ import com.bean.MyConfigurationDateBean;
 import com.bean.MyConfigurationTestBean;
 import com.bean.MyHelloServiceConfigurationBean;
 import com.bean.MyPerson;
+import com.bean.MyPrototypePerson;
 import com.context.TestAnnotationApplicationContext;
 import com.service.InterfaceHelloService;
-import com.service.InterfaceSayHelloService;
 import com.service.impl.all.TestSayService;
 
 import cn.hutool.json.JSONUtil;
@@ -148,6 +148,8 @@ public class TestBeanFactory {
 		log.info("xml加载完毕");
 		MyPerson person1 = (MyPerson) ac.getBean("person1");
 		log.info("person={}", person1);
+		MyPrototypePerson person2 = (MyPrototypePerson) ac.getBean("person2");
+		log.info("person2={}", person2);
 		Date myDate = (Date) ac.getBean("myDate");
 		log.info("myDate={}", DateFormatUtils.ISO_DATETIME_FORMAT.format(myDate));
 		log.info("关闭容器");
