@@ -1,7 +1,9 @@
 package com.beanfactory;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Test;
@@ -22,6 +24,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
+import org.springframework.stereotype.Component;
 
 import com.bean.Box;
 import com.bean.Car;
@@ -58,7 +64,7 @@ public class TestBeanFactory {
 		context.close();
 	}
 	@Test
-	public void testAnnoConfigProfile() {
+	public void testAnnoConfigProfile() throws Exception {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "product");
 		context.register(MyHelloServiceConfigurationBean.class);
@@ -76,7 +82,29 @@ public class TestBeanFactory {
 			helloService=(InterfaceHelloService) context.getBean("devHelloServiceImpl");
 			helloService.sayHello();
 		}
+		testSimpleMetadataReaderFactory(context);
 		context.close();
+	}
+	
+	/**
+	 * 打印标注了Component的类
+	 * @param context
+	 * @throws Exception
+	 */
+	private void testSimpleMetadataReaderFactory (ApplicationContext context) throws Exception{
+		final String packageSearchPath = "classpath*:com/service/impl/all/**/*.class";
+		final Resource[] resources =context.getResources(packageSearchPath);
+		final SimpleMetadataReaderFactory factory = new SimpleMetadataReaderFactory(context);
+		for (final Resource resource : resources) {
+             final MetadataReader mdReader = factory.getMetadataReader(resource);
+             final AnnotationMetadata am = mdReader.getAnnotationMetadata();
+             Set<String> types = am.getAnnotationTypes();
+             for(String type : types) {
+            	 if(type.equals(Component.class.getName())) {
+            		 log.info("name={}",resource.getFilename());
+            	 }
+             }
+         }
 	}
 
 	@Test
@@ -131,7 +159,7 @@ public class TestBeanFactory {
 		log.info("config2={}", config2);
 		context.close();
 	}
-
+	
 	@Test
 	public void testConfigurationClassPostProcessor() {
 		ConfigurationClassPostProcessor postProcessor = new ConfigurationClassPostProcessor();
@@ -148,6 +176,7 @@ public class TestBeanFactory {
 		log.info("xml加载完毕");
 		MyPerson person1 = (MyPerson) ac.getBean("person1");
 		log.info("person={}", person1);
+		person1.printAllBeanFactoryPostProcessor();
 		MyPrototypePerson person2 = (MyPrototypePerson) ac.getBean("person2");
 		log.info("person2={}", person2);
 		Date myDate = (Date) ac.getBean("myDate");
