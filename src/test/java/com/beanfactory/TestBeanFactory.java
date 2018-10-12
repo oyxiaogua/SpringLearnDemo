@@ -1,6 +1,5 @@
 package com.beanfactory;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -18,14 +17,19 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import org.springframework.stereotype.Component;
 
@@ -83,6 +87,9 @@ public class TestBeanFactory {
 			helloService.sayHello();
 		}
 		testSimpleMetadataReaderFactory(context);
+		log.info("-------------------------------------");
+		testMetadataReaderFactory(context);
+		log.info("-------------------------------------");
 		context.close();
 	}
 	
@@ -91,7 +98,29 @@ public class TestBeanFactory {
 	 * @param context
 	 * @throws Exception
 	 */
+	private void testMetadataReaderFactory(ApplicationContext context) throws Exception{
+		ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(context);
+        MetadataReaderFactory metaReader = new CachingMetadataReaderFactory(context);
+        Resource[] resources = resolver.getResources("classpath*:com/service/impl/all/**/*.class");
+        for (final Resource resource : resources) {
+            final MetadataReader mdReader = metaReader.getMetadataReader(resource);
+            final AnnotationMetadata am = mdReader.getAnnotationMetadata();
+            Set<String> types = am.getAnnotationTypes();
+            for(String type : types) {
+           	 if(type.equals(Component.class.getName())) {
+           		 log.info("name={}",resource.getFilename());
+           	 }
+            }
+        }
+	}
+	
+	/**
+	 * 打印标注了Component的类
+	 * @param context
+	 * @throws Exception
+	 */
 	private void testSimpleMetadataReaderFactory (ApplicationContext context) throws Exception{
+		//implements ResourceLoaderAware获取resourceLoader
 		final String packageSearchPath = "classpath*:com/service/impl/all/**/*.class";
 		final Resource[] resources =context.getResources(packageSearchPath);
 		final SimpleMetadataReaderFactory factory = new SimpleMetadataReaderFactory(context);
