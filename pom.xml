@@ -15,12 +15,19 @@
 		<slf4j-api.version>1.7.25</slf4j-api.version>
 		<guava.version>23.5-jre</guava.version>
 		<spring.version>5.0.6.RELEASE</spring.version>
-		<hutool.version>4.1.1</hutool.version>
+		<hutool.version>4.1.18</hutool.version>
 		<aspectjweaver.version>1.9.1</aspectjweaver.version>
 		<cglib.version>3.2.7</cglib.version>
+		<jackson-core.version>2.9.7</jackson-core.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson-core.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
@@ -63,7 +70,7 @@
 			<artifactId>spring-aop</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>

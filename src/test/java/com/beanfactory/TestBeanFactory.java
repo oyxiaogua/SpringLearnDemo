@@ -17,7 +17,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -33,6 +32,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import org.springframework.stereotype.Component;
 
+import com.bean.Book;
 import com.bean.Box;
 import com.bean.Car;
 import com.bean.MyConditionConfigurationBean;
@@ -210,6 +210,8 @@ public class TestBeanFactory {
 		log.info("person2={}", person2);
 		Date myDate = (Date) ac.getBean("myDate");
 		log.info("myDate={}", DateFormatUtils.ISO_DATETIME_FORMAT.format(myDate));
+		Book book= (Book) ac.getBean("book");
+		log.info("book={}", book);
 		log.info("关闭容器");
 		((ClassPathXmlApplicationContext) ac).close();
 	}

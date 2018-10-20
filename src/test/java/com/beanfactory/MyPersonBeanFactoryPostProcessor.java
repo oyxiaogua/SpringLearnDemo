@@ -28,6 +28,11 @@ public class MyPersonBeanFactoryPostProcessor implements BeanFactoryPostProcesso
         beanFactory.registerBeanDefinition("myConfigurationDateBean", new RootBeanDefinition(MyConfigurationDateBean.class));
 		ConfigurationClassPostProcessor postProcessor = new ConfigurationClassPostProcessor();
         postProcessor.postProcessBeanDefinitionRegistry(beanFactory);
+        
+        bd = arg0.getBeanDefinition("book");
+        if(bd!=null){
+    		bd.getPropertyValues().addPropertyValue("name", "myPersonBeanFactoryPostProcessor");
+        }
 	}
 
 }

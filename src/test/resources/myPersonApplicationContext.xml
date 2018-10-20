@@ -27,4 +27,5 @@
     <bean id="myPrototypeDestroyPrototypeBeansPostProcessor" class="com.beanfactory.MyPrototypeDestroyPrototypeBeansPostProcessor" />
 	<bean id="myPersonBeanFactoryPostProcessor" class="com.beanfactory.MyPersonBeanFactoryPostProcessor" />
 	<bean id="mySmartInitializingSingleton" class="com.beanfactory.MySmartInitializingSingleton" />
+	<bean id="myBeanDefinitionRegistryPostProcessor" class="com.beanfactory.MyBeanDefinitionRegistryPostProcessor" />
 </beans>
