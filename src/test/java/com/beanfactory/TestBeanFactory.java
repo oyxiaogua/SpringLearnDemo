@@ -44,6 +44,7 @@ import com.bean.MyPerson;
 import com.bean.MyPrototypePerson;
 import com.context.TestAnnotationApplicationContext;
 import com.service.InterfaceHelloService;
+import com.service.InterfaceMyRefService2;
 import com.service.impl.all.TestSayService;
 
 import cn.hutool.json.JSONUtil;
@@ -274,6 +275,17 @@ public class TestBeanFactory {
 		ApplicationContext context = new ClassPathXmlApplicationContext("/myConfigBeanDefine.xml");
 		MyConfigValue2 config2 = (MyConfigValue2) context.getBean("myConfigValue2");
 		log.info("config2={}", config2);
+		((ClassPathXmlApplicationContext) context).close();
+	}
+	
+	@Test
+	public void testBeanAutowireByName() {
+		ApplicationContext context = new ClassPathXmlApplicationContext("/beanRefService1.xml");
+		InterfaceMyRefService2 service1 = (InterfaceMyRefService2) context.getBean("myRefService2_1");
+		service1.printName2();
+		
+		InterfaceMyRefService2 service2 = (InterfaceMyRefService2) context.getBean("myRefService2_2");
+		service2.printName2();
 		((ClassPathXmlApplicationContext) context).close();
 	}
 }
